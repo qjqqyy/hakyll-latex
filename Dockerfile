@@ -1,4 +1,7 @@
-FROM futtetennista/hakyll:4.12.5.1
+FROM haskell:8.6.5
+
+ENV LANG=C.UTF-8 \
+    LC_ALL=C.UTF-8
 
 # reference: https://github.com/dalibo/pandocker/blob/56a2928a1da06cf3f5adf9d05b442cccbdd59dd2/Dockerfile
 #
@@ -8,6 +11,8 @@ ENV DEBIAN_PRIORITY critical
 ENV DEBCONF_NOWARNINGS yes
 RUN apt-get -qq update && \
     apt-get -qy install --no-install-recommends \
+        git \
+        ssh \
         lmodern \
         texlive \
         texlive-luatex \
@@ -25,6 +30,7 @@ RUN apt-get -qq update && \
         texlive-lang-english \
         texlive-fonts-extra \
         texlive-generic-extra \
+        texlive-pictures \
     && apt-get clean && \
     rm -rf /var/lib/apt/lists/*
 
@@ -40,9 +46,13 @@ RUN fc-cache
 #        http://ftp.math.utah.edu/pub/tex/historic/systems/texlive/${TEXLIVE_VERSION}/tlnet-final && \
 #    tlmgr install
 
+COPY stack.yaml /root/.stack/global-project/stack.yaml
+RUN stack install hakyll
+EXPOSE 8000
+
 # eisvogel template
 ARG TEMPLATES_DIR=/root/.pandoc/templates
-ARG EISVOGEL_VERSION=v1.2.4
+ARG EISVOGEL_VERSION=v1.3.1
 RUN mkdir -p ${TEMPLATES_DIR} && \
     curl -L -o ${TEMPLATES_DIR}/eisvogel.latex \
         https://raw.githubusercontent.com/Wandmalfarbe/pandoc-latex-template/${EISVOGEL_VERSION}/eisvogel.tex
