@@ -1,0 +1,19 @@
+name: Publish Docker to GPR
+on: [push]
+
+jobs:
+  build_and_push:
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@master
+
+    - name: Build, Tag, Publish Docker
+      uses: HurricanKai/Publish-Docker-Github-Action@1.12.1
+      with:
+        name: docker.pkg.github.com/${{ github.repository }}/hakyll-latex
+        registry: docker.pkg.github.com
+        username: ${{ github.actor }}
+        password: ${{ secrets.GITHUB_TOKEN }}
+        tagging: ${{ contains(github.ref, 'refs/tags/') }}
+        cache: true
