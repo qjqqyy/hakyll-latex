@@ -1,4 +1,7 @@
-resolver: lts-14.17
+resolver: lts-15.7
 packages: []
 extra-deps:
-  - hakyll-4.13.0.1
+  - hakyll-4.13.2.0
+  - warp-3.2.28
+  - http2-1.6.5
+  - lrucache-1.2.0.1

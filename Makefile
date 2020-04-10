@@ -1,7 +1,4 @@
 build:
-	docker build -t qjqqyy/hakyll-latex .
+	docker build -t docker.pkg.github.com/qjqqyy/hakyll-latex/hakyll-latex .
 
-push: build
-	docker push qjqqyy/hakyll-latex
-
-.PHONY: build push
+.PHONY: build

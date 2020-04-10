@@ -1,4 +1,4 @@
-FROM haskell:8.6.5
+FROM haskell:8.8.3
 
 ENV LANG=C.UTF-8 \
     LC_ALL=C.UTF-8
@@ -28,6 +28,7 @@ RUN apt-get -qq update && \
         texlive-bibtex-extra \
         texlive-science \
         texlive-lang-english \
+        texlive-lang-japanese \
         texlive-fonts-extra \
         texlive-generic-extra \
         texlive-pictures \
@@ -52,10 +53,10 @@ EXPOSE 8000
 
 # eisvogel template
 ARG TEMPLATES_DIR=/root/.pandoc/templates
-ARG EISVOGEL_VERSION=v1.3.1
+ARG EISVOGEL_VERSION=v1.4.0
 RUN mkdir -p ${TEMPLATES_DIR} && \
-    curl -L -o ${TEMPLATES_DIR}/eisvogel.latex \
-        https://raw.githubusercontent.com/Wandmalfarbe/pandoc-latex-template/${EISVOGEL_VERSION}/eisvogel.tex
+    curl -L https://raw.githubusercontent.com/Wandmalfarbe/pandoc-latex-template/${EISVOGEL_VERSION}/eisvogel.tex | \
+        sed '/^\\begin{document}/s/$/$if(dontmaketitle)$$else$\\maketitle$endif$/' > ${TEMPLATES_DIR}/eisvogel.latex
 
 COPY latexmkrc /root/.latexmkrc
 
