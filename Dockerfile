@@ -1,4 +1,4 @@
-FROM haskell:8.8.3
+FROM haskell:8.8.4
 
 ENV LANG=C.UTF-8 \
     LC_ALL=C.UTF-8
@@ -11,14 +11,12 @@ ENV DEBIAN_PRIORITY critical
 ENV DEBCONF_NOWARNINGS yes
 RUN apt-get -qq update && \
     apt-get -qy install --no-install-recommends \
-        git \
-        ssh \
+        fontconfig \
         lmodern \
         texlive \
         texlive-luatex \
         texlive-pstricks \
         texlive-xetex \
-        wget \
         xzdec \
         fonts-lato \
         fonts-liberation \
@@ -47,13 +45,13 @@ RUN fc-cache
 #        http://ftp.math.utah.edu/pub/tex/historic/systems/texlive/${TEXLIVE_VERSION}/tlnet-final && \
 #    tlmgr install
 
-COPY stack.yaml /root/.stack/global-project/stack.yaml
-RUN stack install hakyll
+#COPY stack.yaml /root/.stack/global-project/stack.yaml
+RUN stack install --resolver lts-16.31 hakyll
 EXPOSE 8000
 
 # eisvogel template
 ARG TEMPLATES_DIR=/root/.pandoc/templates
-ARG EISVOGEL_VERSION=v1.4.0
+ARG EISVOGEL_VERSION=v2.0.0
 RUN mkdir -p ${TEMPLATES_DIR} && \
     curl -L https://raw.githubusercontent.com/Wandmalfarbe/pandoc-latex-template/${EISVOGEL_VERSION}/eisvogel.tex | \
         sed '/^\\begin{document}/s/$/$if(dontmaketitle)$$else$\\maketitle$endif$/' > ${TEMPLATES_DIR}/eisvogel.latex
